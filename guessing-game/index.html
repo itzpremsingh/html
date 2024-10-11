@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Guessing Game</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Guessing Game</h1>
+      <button id="start-btn" onclick="showModal('custom-mode-popup')">
+        Start Game
+      </button>
+
+      <div id="custom-mode-popup" class="modal hidden">
+        <div class="modal-content">
+          <h2>Custom Mode Settings</h2>
+          <label for="custom-range-start">Start Range:</label>
+          <input
+            type="number"
+            id="custom-range-start"
+            min="1"
+            value="1"
+          /><br />
+          <label for="custom-range-end">End Range:</label>
+          <input type="number" id="custom-range-end" value="100" /><br />
+          <label for="max-lives">Max Lives:</label>
+          <input type="number" id="max-lives" value="3" /><br />
+          <button onclick="startCustomGame()">Start Game</button>
+          <button onclick="hideModal('custom-mode-popup')">Cancel</button>
+        </div>
+      </div>
+
+      <div id="game-section" class="hidden">
+        <div class="info-container">
+          <p id="range" class="info-text"></p>
+          <p id="lives" class="info-text"></p>
+        </div>
+        <input type="number" id="user-guess" placeholder="Enter your guess" />
+        <button onclick="makeGuess()">Guess</button>
+        <p id="result" class="result-text"></p>
+      </div>
+
+      <div id="result-popup" class="modal hidden">
+        <div class="modal-content">
+          <h2 id="popup-message"></h2>
+          <button onclick="hideModal('result-popup')">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
