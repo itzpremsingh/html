@@ -1,4 +1,3 @@
-/* General Styling */
 body {
   font-family: Arial, sans-serif;
   background-color: #1e1e1e;
@@ -26,7 +25,6 @@ h1 {
   color: #fff;
 }
 
-/* Question Styling */
 .question {
   margin-bottom: 20px;
   padding: 10px;
@@ -66,7 +64,6 @@ h1 {
   color: white;
 }
 
-/* Submit Button */
 #submit {
   background-color: #1d72b8;
   color: white;
@@ -82,7 +79,6 @@ h1 {
   background-color: #155a8a;
 }
 
-/* Modal Styling */
 .modal {
   display: none;
   position: fixed;
@@ -126,7 +122,7 @@ h1 {
 .demerits {
   text-align: left;
   margin-bottom: 20px;
-  background-color: #2a2a2a; /* Dark theme background */
+  background-color: #2a2a2a;
   border-radius: 5px;
   padding: 10px;
 }
@@ -135,7 +131,7 @@ h1 {
 .demerits h3 {
   font-size: 1.2em;
   margin-bottom: 10px;
-  color: #ffd700; /* Gold color for headings */
+  color: #ffd700;
 }
 
 .merits ul,
@@ -148,10 +144,9 @@ h1 {
 .merits li,
 .demerits li {
   margin-bottom: 5px;
-  color: #d3d3d3; /* Light gray color for list items */
+  color: #d3d3d3;
 }
 
-/* Responsive Design */
 @media (max-width: 600px) {
   .container {
     padding: 20px;

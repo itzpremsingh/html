@@ -3,9 +3,8 @@ const resultContainer = document.getElementById("resultText");
 const resultModal = document.getElementById("resultModal");
 const closeBtn = document.getElementById("closeBtn");
 
-let totalScore = 0; // Initialize total score
+let totalScore = 0;
 
-// Shuffle function to randomize options
 function shuffleOptions() {
   const questions = document.querySelectorAll(".question");
   questions.forEach((question) => {
@@ -16,7 +15,6 @@ function shuffleOptions() {
   });
 }
 
-// Shuffle array function (Fisher-Yates Algorithm)
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -25,7 +23,6 @@ function shuffleArray(array) {
   return array;
 }
 
-// Shuffle the options on page load
 window.onload = shuffleOptions;
 
 const questions = document.querySelectorAll(".question");
@@ -34,23 +31,20 @@ questions.forEach((question) => {
   const options = question.querySelectorAll(".options li");
   options.forEach((option) => {
     option.onclick = () => {
-      // Prevent re-selecting an option
       if (option.classList.contains("selected")) return;
 
-      // Remove 'selected' class from all siblings of the clicked option
       const siblings = option.parentElement.children;
       for (let sibling of siblings) {
         sibling.classList.remove("selected");
       }
-      // Add 'selected' class to the clicked option
+
       option.classList.add("selected");
     };
   });
 });
 
-// Submit button event handler
 submitButton.onclick = () => {
-  totalScore = 0; // Reset total score for every new submission
+  totalScore = 0;
   const questions = document.querySelectorAll(".question");
 
   questions.forEach((question) => {
@@ -62,12 +56,9 @@ submitButton.onclick = () => {
     });
   });
 
-  // Show result in modal
-  //   resultContainer.textContent = `Your score is: ${totalScore}`;
   displayResultModal(totalScore);
 };
 
-// Function to display the result modal
 function displayResultModal(score) {
   const merits = document.getElementById("meritsList");
   const demerits = document.getElementById("demeritsList");
@@ -193,12 +184,10 @@ function displayResultModal(score) {
   resultModal.style.display = "block";
 }
 
-// Close the modal when the user clicks the close button
 closeBtn.onclick = () => {
   resultModal.style.display = "none";
 };
 
-// Close the modal if the user clicks outside the modal
 window.onclick = (event) => {
   if (event.target === resultModal) {
     resultModal.style.display = "none";
