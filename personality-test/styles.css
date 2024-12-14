@@ -1,0 +1,186 @@
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1e1e1e;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.container {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  text-align: center;
+  padding: 30px;
+  background-color: #333;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  color: #fff;
+}
+
+/* Question Styling */
+.question {
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #444;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.question p {
+  font-size: 18px;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.options {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.options li {
+  cursor: pointer;
+  background-color: #555;
+  padding: 12px;
+  margin: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  font-size: 16px;
+}
+
+.options li:hover {
+  background-color: #393838;
+}
+
+.options li.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+/* Submit Button */
+#submit {
+  background-color: #1d72b8;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+#submit:hover {
+  background-color: #155a8a;
+}
+
+/* Modal Styling */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background-color: #333;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  text-align: center;
+}
+
+.result {
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.close {
+  position: relative;
+  bottom: 10px;
+  right: -10px;
+  color: #fff;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.merits,
+.demerits {
+  text-align: left;
+  margin-bottom: 20px;
+  background-color: #2a2a2a; /* Dark theme background */
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.merits h3,
+.demerits h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #ffd700; /* Gold color for headings */
+}
+
+.merits ul,
+.demerits ul {
+  padding-left: 20px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.merits li,
+.demerits li {
+  margin-bottom: 5px;
+  color: #d3d3d3; /* Light gray color for list items */
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .question p {
+    font-size: 16px;
+  }
+
+  .options li {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  #submit {
+    font-size: 16px;
+    padding: 12px 18px;
+  }
+
+  #resultText {
+    font-size: 1em;
+  }
+
+  .modal-content {
+    width: 90%;
+  }
+}
