@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Fire API</title>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Free Fire Info</h1>
+        <form>
+            <div class="custom-dropdown">
+                <div class="dropdown-header" id="dropdown-header">
+                    Select a server <span>▼</span>
+                </div>
+                <ul class="dropdown-list" id="dropdown-list">
+                    <li class="dropdown-item" data-value="AF">Africa (AF)</li>
+                    <li class="dropdown-item" data-value="BD">Bangladesh (BD)</li>
+                    <li class="dropdown-item" data-value="BR">Brazil (BR)</li>
+                    <li class="dropdown-item" data-value="EU">Europe (EU)</li>
+                    <li class="dropdown-item" data-value="ID">Indonesia (ID)</li>
+                    <li class="dropdown-item" data-value="IND">India (IND)</li>
+                    <li class="dropdown-item" data-value="JP">Japan (JP)</li>
+                    <li class="dropdown-item" data-value="LATAM">Latin America (LATAM)</li>
+                    <li class="dropdown-item" data-value="ME">Middle East (ME)</li>
+                    <li class="dropdown-item" data-value="NA">North America (NA)</li>
+                    <li class="dropdown-item" data-value="PK">Pakistan (PK)</li>
+                    <li class="dropdown-item" data-value="RU">Russia (RU)</li>
+                    <li class="dropdown-item" data-value="SG">Singapore (SG)</li>
+                    <li class="dropdown-item" data-value="SAC">South America (SAC)</li>
+                    <li class="dropdown-item" data-value="TW">Taiwan (TW)</li>
+                    <li class="dropdown-item" data-value="TH">Thailand (TH)</li>
+                    <li class="dropdown-item" data-value="US">United States (US)</li>
+                    <li class="dropdown-item" data-value="VN">Vietnam (VN)</li>
+                    <!-- Add more options as needed -->
+                </ul>
+            </div>
+            <input type="text" id="uid-input" placeholder="Enter your UID">
+            <button id="fetch-button">Fetch</button>
+        </form>
+        <div id="user-data" style="display: none;">
+            <p><strong>Name:</strong> <span id="nickname"></span></p>
+            <p><strong>Badge Count:</strong> <span id="badgeCnt"></span></p>
+            <p><strong>Account Created At:</strong> <span id="createdAt"></span></p>
+            <p><strong>Last Login:</strong> <span id="lastLoginAt"></span></p>
+            <p><strong>Likes:</strong> <span id="liked"></span></p>
+            <p><strong>Level:</strong> <span id="level"></span></p>
+            <h3>Guild Info</h3>
+            <p><strong>Guild Name:</strong> <span id="guildName"></span></p>
+            <p><strong>Leader Name:</strong> <span id="leaderName"></span> (UID: <span id="leaderUid"></span>)</p>
+            <p><strong>Guild Level:</strong> <span id="guildLevel"></span></p>
+            <p><strong>Current Members:</strong> <span id="currentMembers"></span></p>
+            <p><strong>Max Members:</strong> <span id="maxMembers"></span></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
