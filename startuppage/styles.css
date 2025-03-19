@@ -1,0 +1,154 @@
+/* Page Styling */
+body {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Search Container */
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 750px; /* Wider Search Bar */
+}
+
+/* Search Box */
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 50px;
+  box-shadow: 0px 4px 15px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Glowing Effect on Focus */
+.search-box:focus-within {
+  box-shadow: 0px 0px 30px rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Search Input */
+input[type="text"] {
+  padding: 16px;
+  font-size: 20px;
+  border: none;
+  outline: none;
+  text-align: center;
+  background: transparent;
+  color: #fff;
+  flex-grow: 1;
+  width: 100%;
+  min-width: 300px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Glowing Border on Focus */
+input[type="text"]:focus {
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.5);
+}
+
+/* Search Button */
+.search-button {
+  width: 55px;
+  height: 55px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out, box-shadow 0.3s, transform 0.2s;
+  position: relative;
+}
+
+/* Hover Effects */
+.search-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.6);
+  transform: scale(1.1);
+}
+
+/* Click Effect */
+.search-button:active {
+  transform: scale(0.95);
+  box-shadow: 0px 0px 25px rgba(255, 255, 255, 0.7);
+}
+
+/* Glowing Hover Effect */
+.search-button:hover::before {
+  transform: scale(1.2);
+}
+
+/* Time (Bottom Right Corner) */
+#time {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  font-size: 40px;
+  font-weight: bold;
+  text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* 🔥 Responsive Design Adjustments */
+@media (max-width: 768px) {
+  .search-container {
+    width: 95%;
+    max-width: 600px;
+  }
+
+  input[type="text"] {
+    font-size: 18px;
+    padding: 14px;
+  }
+
+  .search-button {
+    width: 50px;
+    height: 50px;
+  }
+
+  #time {
+    font-size: 30px;
+    bottom: 15px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    width: 98%;
+    max-width: 500px;
+  }
+
+  input[type="text"] {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .search-button {
+    width: 45px;
+    height: 45px;
+  }
+
+  #time {
+    font-size: 24px;
+    bottom: 10px;
+    right: 10px;
+  }
+}
