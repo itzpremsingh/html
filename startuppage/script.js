@@ -10,12 +10,22 @@ function getRandomDarkColor() {
 }
 
 /**
+ * Generates a random degree
+ * @returns {number} Random degree
+ */
+function getRandomDegrees() {
+  let degrees = Math.floor(Math.random() * 360);
+  return degrees;
+}
+
+/**
  * Applies a random gradient background (only on refresh)
  */
 function applyRandomGradient() {
   let color1 = getRandomDarkColor();
   let color2 = getRandomDarkColor();
-  document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+  let degrees = getRandomDegrees();
+  document.body.style.background = `linear-gradient(${degrees}deg, ${color1}, ${color2})`;
 }
 
 /**
@@ -28,9 +38,9 @@ function updateTime() {
 
 // Prevent empty search submission
 document
-  .getElementById("searchForm")
+  .getElementById("search-form")
   .addEventListener("submit", function (event) {
-    let searchInput = document.getElementById("searchInput");
+    let searchInput = document.getElementById("search-input");
     if (searchInput.value.trim() === "") {
       event.preventDefault();
     }
