@@ -9,13 +9,13 @@ To get started with these projects, follow these steps:
 1. Clone the repository to your local machine:
 
 ```
-git clone https://github.com/ItzPremSingh/HTML.git
+git clone https://github.com/itzpremsingh/html.git
 ```
 
 2. Navigate to the project directory you want to explore:
 
 ```
-cd HTML/<project-name>
+cd html/<project-name>
 ```
 
 3. Open the `index.html` file in your web browser to view the project.
