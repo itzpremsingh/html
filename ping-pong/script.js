@@ -6,18 +6,17 @@ function resizeCanvas() {
   const height = Math.min(window.innerWidth * 0.5, 400);
   canvas.width = width;
   canvas.height = height;
+  // Recenter paddles and ball after resize
+  leftY = canvas.height / 2 - PADDLE_HEIGHT / 2;
+  rightY = canvas.height / 2 - PADDLE_HEIGHT / 2;
+  ballX = canvas.width / 2;
+  ballY = canvas.height / 2;
 }
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
 const PADDLE_WIDTH = 10;
 const PADDLE_HEIGHT = 70;
 const BALL_RADIUS = 8;
 
-let leftY = canvas.height / 2 - PADDLE_HEIGHT / 2;
-let rightY = canvas.height / 2 - PADDLE_HEIGHT / 2;
-let ballX = canvas.width / 2;
-let ballY = canvas.height / 2;
+let leftY, rightY, ballX, ballY;
 let ballSpeedX = 4;
 let ballSpeedY = 3;
 let leftScore = 0;
@@ -26,6 +25,9 @@ let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
 
 // Simple AI difficulty (pixels per frame)
 const AI_SPEED = 5;
+
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -67,9 +69,10 @@ function update() {
   leftY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, leftY));
 
   // AI paddle movement (right)
-  if (rightY + PADDLE_HEIGHT/2 < ballY - 10) {
+  let aiCenter = rightY + PADDLE_HEIGHT / 2;
+  if (aiCenter < ballY - 10) {
     rightY += AI_SPEED;
-  } else if (rightY + PADDLE_HEIGHT/2 > ballY + 10) {
+  } else if (aiCenter > ballY + 10) {
     rightY -= AI_SPEED;
   }
   rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
