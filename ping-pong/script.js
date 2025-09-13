@@ -1,126 +1,179 @@
-const canvas = document.getElementById('pongCanvas');
+const canvas = document.getElementById('pong');
 const ctx = canvas.getContext('2d');
 
-const WIDTH = canvas.width;
-const HEIGHT = canvas.height;
+function resizeCanvas() {
+  const width = Math.min(window.innerWidth * 0.9, 600);
+  const height = Math.min(window.innerWidth * 0.5, 400);
+  canvas.width = width;
+  canvas.height = height;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
-// Paddle settings
-const PADDLE_WIDTH = 12;
-const PADDLE_HEIGHT = 100;
-const PADDLE_MARGIN = 20;
-const PLAYER_X = PADDLE_MARGIN;
-const AI_X = WIDTH - PADDLE_MARGIN - PADDLE_WIDTH;
+const PADDLE_WIDTH = 10;
+const PADDLE_HEIGHT = 70;
+const BALL_RADIUS = 8;
 
-// Ball settings
-const BALL_SIZE = 16;
-const BALL_SPEED = 5;
+let leftY = canvas.height / 2 - PADDLE_HEIGHT / 2;
+let rightY = canvas.height / 2 - PADDLE_HEIGHT / 2;
+let ballX = canvas.width / 2;
+let ballY = canvas.height / 2;
+let ballSpeedX = 4;
+let ballSpeedY = 3;
+let leftScore = 0;
+let rightScore = 0;
+let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
+let running = true;
 
-// Game objects
-let playerY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
-let aiY = HEIGHT / 2 - PADDLE_HEIGHT / 2;
+// Touch/mouse for right paddle
+let dragging = false;
 
-let ball = {
-  x: WIDTH / 2 - BALL_SIZE / 2,
-  y: HEIGHT / 2 - BALL_SIZE / 2,
-  vx: BALL_SPEED * (Math.random() < 0.5 ? 1 : -1),
-  vy: BALL_SPEED * (Math.random() * 2 - 1)
-};
+function draw() {
+  // Clear
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-// Mouse control for player paddle
-canvas.addEventListener('mousemove', (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const mouseY = e.clientY - rect.top;
-  playerY = mouseY - PADDLE_HEIGHT / 2;
-  playerY = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, playerY));
-});
+  // Field
+  ctx.fillStyle = "#222";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Simple AI for right paddle
-function updateAI() {
-  const aiCenter = aiY + PADDLE_HEIGHT / 2;
-  if (aiCenter < ball.y + BALL_SIZE / 2 - 8) {
-    aiY += 5;
-  } else if (aiCenter > ball.y + BALL_SIZE / 2 + 8) {
-    aiY -= 5;
-  }
-  aiY = Math.max(0, Math.min(HEIGHT - PADDLE_HEIGHT, aiY));
+  // Middle line
+  ctx.setLineDash([8, 8]);
+  ctx.strokeStyle = "#00e676";
+  ctx.beginPath();
+  ctx.moveTo(canvas.width / 2, 0);
+  ctx.lineTo(canvas.width / 2, canvas.height);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Scores
+  ctx.font = "bold 28px 'Segoe UI', Arial";
+  ctx.fillStyle = "#00e676";
+  ctx.textAlign = "center";
+  ctx.fillText(leftScore, canvas.width / 4, 40);
+  ctx.fillText(rightScore, canvas.width * 3 / 4, 40);
+
+  // Paddles
+  ctx.fillStyle = "#fff";
+  ctx.fillRect(18, leftY, PADDLE_WIDTH, PADDLE_HEIGHT);
+  ctx.fillRect(canvas.width - 18 - PADDLE_WIDTH, rightY, PADDLE_WIDTH, PADDLE_HEIGHT);
+
+  // Ball
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, BALL_RADIUS, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.shadowColor = "#00e676";
+  ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
 }
 
-// Ball movement and collision
-function updateBall() {
-  ball.x += ball.vx;
-  ball.y += ball.vy;
+function update() {
+  if (!running) return;
+  // Left paddle movement
+  if (wPressed || upPressed) leftY -= 6;
+  if (sPressed || downPressed) leftY += 6;
+  leftY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, leftY));
 
-  // Top and bottom wall collision
-  if (ball.y <= 0 || ball.y + BALL_SIZE >= HEIGHT) {
-    ball.vy *= -1;
-    ball.y = Math.max(0, Math.min(HEIGHT - BALL_SIZE, ball.y));
-  }
+  // Ball movement
+  ballX += ballSpeedX;
+  ballY += ballSpeedY;
+
+  // Top/bottom bounce
+  if (ballY - BALL_RADIUS < 0 || ballY + BALL_RADIUS > canvas.height) ballSpeedY *= -1;
 
   // Left paddle collision
   if (
-    ball.x <= PLAYER_X + PADDLE_WIDTH &&
-    ball.x >= PLAYER_X &&
-    ball.y + BALL_SIZE > playerY &&
-    ball.y < playerY + PADDLE_HEIGHT
+    ballX - BALL_RADIUS < 18 + PADDLE_WIDTH &&
+    ballY > leftY &&
+    ballY < leftY + PADDLE_HEIGHT
   ) {
-    ball.vx = Math.abs(ball.vx);
-    // Add a bit of randomness and paddle influence
-    ball.vy += ((ball.y + BALL_SIZE / 2) - (playerY + PADDLE_HEIGHT / 2)) * 0.15;
+    ballSpeedX *= -1;
+    ballX = 18 + PADDLE_WIDTH + BALL_RADIUS;
+    ballSpeedY += (Math.random() - 0.5) * 2;
   }
 
   // Right paddle collision
   if (
-    ball.x + BALL_SIZE >= AI_X &&
-    ball.x + BALL_SIZE <= AI_X + PADDLE_WIDTH &&
-    ball.y + BALL_SIZE > aiY &&
-    ball.y < aiY + PADDLE_HEIGHT
+    ballX + BALL_RADIUS > canvas.width - 18 - PADDLE_WIDTH &&
+    ballY > rightY &&
+    ballY < rightY + PADDLE_HEIGHT
   ) {
-    ball.vx = -Math.abs(ball.vx);
-    ball.vy += ((ball.y + BALL_SIZE / 2) - (aiY + PADDLE_HEIGHT / 2)) * 0.15;
+    ballSpeedX *= -1;
+    ballX = canvas.width - 18 - PADDLE_WIDTH - BALL_RADIUS;
+    ballSpeedY += (Math.random() - 0.5) * 2;
   }
 
-  // Left or right wall (reset ball)
-  if (ball.x < 0 || ball.x > WIDTH) {
+  // Score left
+  if (ballX - BALL_RADIUS < 0) {
+    rightScore++;
     resetBall();
   }
+  // Score right
+  if (ballX + BALL_RADIUS > canvas.width) {
+    leftScore++;
+    resetBall();
+  }
+  draw();
+  requestAnimationFrame(update);
 }
 
 function resetBall() {
-  ball.x = WIDTH / 2 - BALL_SIZE / 2;
-  ball.y = HEIGHT / 2 - BALL_SIZE / 2;
-  ball.vx = BALL_SPEED * (Math.random() < 0.5 ? 1 : -1);
-  ball.vy = BALL_SPEED * (Math.random() * 2 - 1);
+  ballX = canvas.width / 2;
+  ballY = canvas.height / 2;
+  ballSpeedX = (Math.random() > 0.5 ? 4 : -4);
+  ballSpeedY = (Math.random() > 0.5 ? 3 : -3);
 }
 
-// Draw everything
-function draw() {
-  ctx.clearRect(0, 0, WIDTH, HEIGHT);
+document.addEventListener('keydown', (e) => {
+  if (e.code === 'ArrowUp') upPressed = true;
+  if (e.code === 'ArrowDown') downPressed = true;
+  if (e.key.toLowerCase() === 'w') wPressed = true;
+  if (e.key.toLowerCase() === 's') sPressed = true;
+});
+document.addEventListener('keyup', (e) => {
+  if (e.code === 'ArrowUp') upPressed = false;
+  if (e.code === 'ArrowDown') downPressed = false;
+  if (e.key.toLowerCase() === 'w') wPressed = false;
+  if (e.key.toLowerCase() === 's') sPressed = false;
+});
 
-  // Draw net
-  ctx.strokeStyle = "#fff";
-  ctx.setLineDash([10, 14]);
-  ctx.beginPath();
-  ctx.moveTo(WIDTH / 2, 0);
-  ctx.lineTo(WIDTH / 2, HEIGHT);
-  ctx.stroke();
-  ctx.setLineDash([]);
+// Touch for right paddle (mobile)
+canvas.addEventListener('touchstart', function(e) {
+  dragging = true;
+});
+canvas.addEventListener('touchend', function(e) {
+  dragging = false;
+});
+canvas.addEventListener('touchmove', function(e) {
+  if (dragging && e.touches.length === 1) {
+    const touchY = e.touches[0].clientY - canvas.getBoundingClientRect().top;
+    rightY = touchY - PADDLE_HEIGHT / 2;
+    rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
+  }
+}, {passive: false});
+// Mouse drag for right paddle (desktop)
+canvas.addEventListener('mousedown', function(e) {
+  dragging = true;
+});
+canvas.addEventListener('mouseup', function(e) {
+  dragging = false;
+});
+canvas.addEventListener('mousemove', function(e) {
+  if (dragging) {
+    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+    rightY = mouseY - PADDLE_HEIGHT / 2;
+    rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
+  }
+});
 
-  // Draw paddles
-  ctx.fillStyle = "#fff";
-  ctx.fillRect(PLAYER_X, playerY, PADDLE_WIDTH, PADDLE_HEIGHT);
-  ctx.fillRect(AI_X, aiY, PADDLE_WIDTH, PADDLE_HEIGHT);
+document.getElementById('restartBtn').onclick = function() {
+  leftScore = rightScore = 0;
+  resetBall();
+  leftY = rightY = canvas.height / 2 - PADDLE_HEIGHT / 2;
+  running = true;
+  update();
+};
 
-  // Draw ball
-  ctx.fillStyle = "#f5c518";
-  ctx.fillRect(ball.x, ball.y, BALL_SIZE, BALL_SIZE);
-}
-
-// Main loop
-function loop() {
-  updateAI();
-  updateBall();
-  draw();
-  requestAnimationFrame(loop);
-}
-
-loop();
+canvas.focus();
+draw();
+update();
