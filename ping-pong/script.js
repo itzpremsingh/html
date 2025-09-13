@@ -23,20 +23,16 @@ let ballSpeedY = 3;
 let leftScore = 0;
 let rightScore = 0;
 let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
-let running = true;
 
-// Touch/mouse for right paddle
-let dragging = false;
+// Simple AI difficulty (pixels per frame)
+const AI_SPEED = 5;
 
 function draw() {
-  // Clear
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Field
   ctx.fillStyle = "#222";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Middle line
   ctx.setLineDash([8, 8]);
   ctx.strokeStyle = "#00e676";
   ctx.beginPath();
@@ -45,19 +41,16 @@ function draw() {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Scores
   ctx.font = "bold 28px 'Segoe UI', Arial";
   ctx.fillStyle = "#00e676";
   ctx.textAlign = "center";
   ctx.fillText(leftScore, canvas.width / 4, 40);
   ctx.fillText(rightScore, canvas.width * 3 / 4, 40);
 
-  // Paddles
   ctx.fillStyle = "#fff";
   ctx.fillRect(18, leftY, PADDLE_WIDTH, PADDLE_HEIGHT);
   ctx.fillRect(canvas.width - 18 - PADDLE_WIDTH, rightY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
-  // Ball
   ctx.beginPath();
   ctx.arc(ballX, ballY, BALL_RADIUS, 0, Math.PI * 2);
   ctx.fillStyle = "#fff";
@@ -68,11 +61,18 @@ function draw() {
 }
 
 function update() {
-  if (!running) return;
-  // Left paddle movement
+  // Player paddle movement (left)
   if (wPressed || upPressed) leftY -= 6;
   if (sPressed || downPressed) leftY += 6;
   leftY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, leftY));
+
+  // AI paddle movement (right)
+  if (rightY + PADDLE_HEIGHT/2 < ballY - 10) {
+    rightY += AI_SPEED;
+  } else if (rightY + PADDLE_HEIGHT/2 > ballY + 10) {
+    rightY -= AI_SPEED;
+  }
+  rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
 
   // Ball movement
   ballX += ballSpeedX;
@@ -137,43 +137,12 @@ document.addEventListener('keyup', (e) => {
   if (e.key.toLowerCase() === 's') sPressed = false;
 });
 
-// Touch for right paddle (mobile)
-canvas.addEventListener('touchstart', function(e) {
-  dragging = true;
-});
-canvas.addEventListener('touchend', function(e) {
-  dragging = false;
-});
-canvas.addEventListener('touchmove', function(e) {
-  if (dragging && e.touches.length === 1) {
-    const touchY = e.touches[0].clientY - canvas.getBoundingClientRect().top;
-    rightY = touchY - PADDLE_HEIGHT / 2;
-    rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
-  }
-}, {passive: false});
-// Mouse drag for right paddle (desktop)
-canvas.addEventListener('mousedown', function(e) {
-  dragging = true;
-});
-canvas.addEventListener('mouseup', function(e) {
-  dragging = false;
-});
-canvas.addEventListener('mousemove', function(e) {
-  if (dragging) {
-    const mouseY = e.clientY - canvas.getBoundingClientRect().top;
-    rightY = mouseY - PADDLE_HEIGHT / 2;
-    rightY = Math.max(0, Math.min(canvas.height - PADDLE_HEIGHT, rightY));
-  }
-});
-
 document.getElementById('restartBtn').onclick = function() {
   leftScore = rightScore = 0;
   resetBall();
   leftY = rightY = canvas.height / 2 - PADDLE_HEIGHT / 2;
-  running = true;
-  update();
 };
 
 canvas.focus();
 draw();
-update();
+update(); // Game starts immediately!
