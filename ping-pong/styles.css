@@ -1,0 +1,23 @@
+body {
+  background: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+#container {
+  box-shadow: 0 0 40px rgba(0,0,0,0.6), 0 0 0 4px #fff;
+  border-radius: 10px;
+  background: #111;
+  padding: 20px;
+}
+
+#pongCanvas {
+  background: #282c34;
+  display: block;
+  margin: 0 auto;
+  border-radius: 8px;
+}
