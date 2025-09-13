@@ -1,6 +1,20 @@
 const canvas = document.getElementById('pong');
 const ctx = canvas.getContext('2d');
 
+const PADDLE_WIDTH = 10;
+const PADDLE_HEIGHT = 70;
+const BALL_RADIUS = 8;
+
+let leftY = 0, rightY = 0, ballX = 0, ballY = 0;
+let ballSpeedX = 4;
+let ballSpeedY = 3;
+let leftScore = 0;
+let rightScore = 0;
+let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
+
+// Simple AI difficulty (pixels per frame)
+const AI_SPEED = 5;
+
 function resizeCanvas() {
   const width = Math.min(window.innerWidth * 0.9, 600);
   const height = Math.min(window.innerWidth * 0.5, 400);
@@ -12,22 +26,10 @@ function resizeCanvas() {
   ballX = canvas.width / 2;
   ballY = canvas.height / 2;
 }
-const PADDLE_WIDTH = 10;
-const PADDLE_HEIGHT = 70;
-const BALL_RADIUS = 8;
-
-let leftY, rightY, ballX, ballY;
-let ballSpeedX = 4;
-let ballSpeedY = 3;
-let leftScore = 0;
-let rightScore = 0;
-let upPressed = false, downPressed = false, wPressed = false, sPressed = false;
-
-// Simple AI difficulty (pixels per frame)
-const AI_SPEED = 5;
-
 resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', () => {
+  resizeCanvas();
+});
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -51,6 +53,7 @@ function draw() {
 
   ctx.fillStyle = "#fff";
   ctx.fillRect(18, leftY, PADDLE_WIDTH, PADDLE_HEIGHT);
+  ctx.fillStyle = "#f00"; // RIGHT PADDLE COLOR TO DEBUG
   ctx.fillRect(canvas.width - 18 - PADDLE_WIDTH, rightY, PADDLE_WIDTH, PADDLE_HEIGHT);
 
   ctx.beginPath();
