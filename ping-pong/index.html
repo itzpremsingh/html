@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Simple Pong Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Responsive Pong Game</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-  <div id="container">
-    <canvas id="pongCanvas" width="800" height="500"></canvas>
+  <div class="container">
+    <h1>Responsive Pong Game</h1>
+    <canvas id="pong" tabindex="0"></canvas>
+    <div class="controls">
+      <p>Player (Left): <kbd>W</kbd>/<kbd>S</kbd> or <kbd>↑</kbd>/<kbd>↓</kbd></p>
+      <p>Player (Right): Touch/Drag or <kbd>↑</kbd>/<kbd>↓</kbd></p>
+      <button id="restartBtn">Restart</button>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
