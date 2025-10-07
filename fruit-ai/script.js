@@ -709,73 +709,209 @@ const fruits = [
   "zwetschge",
 ];
 
-// Levenshtein Distance
-function levenshtein(a, b) {
-  const matrix = Array.from({ length: a.length + 1 }, () =>
-    Array(b.length + 1).fill(0)
-  );
-  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
-  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
-  for (let i = 1; i <= a.length; i++) {
-    for (let j = 1; j <= b.length; j++) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      matrix[i][j] = Math.min(
-        matrix[i - 1][j] + 1,
-        matrix[i][j - 1] + 1,
-        matrix[i - 1][j - 1] + cost
+// Create floating fruits
+    const floatingFruitsContainer = document.getElementById('floatingFruits');
+    const fruitIcons = ['🍎', '🍌', '🍍', '🍊', '🍓', '🫐', '🍇', '🍉', '🥝', '🥭', '🍑', '🍒'];
+
+    function createFloatingFruits() {
+      // Clear existing fruits
+      floatingFruitsContainer.innerHTML = '';
+
+      // Calculate how many fruits to create based on screen size
+      const fruitCount = Math.min(15, Math.floor(window.innerWidth / 50));
+
+      for (let i = 0; i < fruitCount; i++) {
+        const fruit = document.createElement('div');
+        fruit.className = 'fruit';
+        fruit.textContent = fruitIcons[Math.floor(Math.random() * fruitIcons.length)];
+        fruit.style.left = `${Math.random() * 100}%`;
+        fruit.style.top = `${Math.random() * 100}%`;
+        fruit.style.animationDuration = `${15 + Math.random() * 20}s`;
+        fruit.style.fontSize = `${1 + Math.random() * 1.5}rem`;
+        floatingFruitsContainer.appendChild(fruit);
+      }
+    }
+
+    // Initial creation of floating fruits
+    createFloatingFruits();
+
+    // Update floating fruits on resize
+    window.addEventListener('resize', createFloatingFruits);
+
+    // Levenshtein Distance function
+    function levenshtein(a, b) {
+      if (a.length === 0) return b.length;
+      if (b.length === 0) return a.length;
+
+      const matrix = Array.from({ length: a.length + 1 }, () =>
+        Array(b.length + 1).fill(0)
       );
+      for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+      for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+      for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+          const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+          matrix[i][j] = Math.min(
+            matrix[i - 1][j] + 1,
+            matrix[i][j - 1] + 1,
+            matrix[i - 1][j - 1] + cost
+          );
+        }
+      }
+      return matrix[a.length][b.length];
     }
-  }
-  return matrix[a.length][b.length];
-}
 
-// Get best matches
-function getBestMatches(word) {
-  const topDistance = {};
-  fruits.forEach((fruit) => {
-    const dist = levenshtein(word.toLowerCase(), fruit.toLowerCase());
-    if (!topDistance[dist]) topDistance[dist] = [];
-    topDistance[dist].push(fruit);
-  });
-  return topDistance;
-}
-
-// UI
-const input = document.getElementById("fruitInput");
-const resultsDiv = document.getElementById("results");
-const suggestionsDiv = document.getElementById("suggestions");
-const checkBtn = document.getElementById("checkBtn");
-
-input.addEventListener("input", () => {
-  const val = input.value.toLowerCase();
-  if (!val) {
-    suggestionsDiv.innerHTML = "";
-    return;
-  }
-  const matches = fruits
-    .filter((f) => f.toLowerCase().startsWith(val))
-    .slice(0, 5);
-  suggestionsDiv.innerHTML = matches.map((f) => `<p>${f}</p>`).join("");
-});
-
-checkBtn.addEventListener("click", () => {
-  const val = input.value.trim();
-  resultsDiv.innerHTML = "";
-  if (!val) return;
-
-  const matches = getBestMatches(val);
-  const labels = {
-    0: "Exact match",
-    1: "Small typo",
-    2: "Close match",
-    3: "Similar word",
-  };
-
-  Object.keys(labels).forEach((dist) => {
-    if (matches[dist]) {
-      resultsDiv.innerHTML += `<p><strong>${labels[dist]}:</strong> ${matches[
-        dist
-      ].join(", ")}</p>`;
+    // Get best matches
+    function getBestMatches(word) {
+      const topDistance = {};
+      fruits.forEach((fruit) => {
+        const dist = levenshtein(word.toLowerCase(), fruit.toLowerCase());
+        if (!topDistance[dist]) topDistance[dist] = [];
+        // Avoid duplicates
+        if (!topDistance[dist].includes(fruit)) {
+          topDistance[dist].push(fruit);
+        }
+      });
+      return topDistance;
     }
-  });
-});
+
+    // UI Elements
+    const input = document.getElementById("fruitInput");
+    const resultsDiv = document.getElementById("results");
+    const suggestionsDiv = document.getElementById("suggestions");
+    const checkBtn = document.getElementById("checkBtn");
+    const clearBtn = document.getElementById("clearBtn");
+
+    // Input event for suggestions
+    let inputTimeout;
+    input.addEventListener("input", () => {
+      // Clear previous timeout
+      clearTimeout(inputTimeout);
+
+      // Set new timeout to avoid too frequent updates
+      inputTimeout = setTimeout(() => {
+        const val = input.value.trim().toLowerCase();
+        if (!val) {
+          suggestionsDiv.innerHTML = "";
+          suggestionsDiv.style.display = "none";
+          return;
+        }
+
+        const matches = fruits
+          .filter((f) => f.toLowerCase().includes(val))
+          .slice(0, 5);
+
+        if (matches.length > 0) {
+          suggestionsDiv.innerHTML = matches.map((f) => `<p>${f}</p>`).join("");
+          suggestionsDiv.style.display = "block";
+        } else {
+          suggestionsDiv.innerHTML = "";
+          suggestionsDiv.style.display = "none";
+        }
+      }, 150);
+    });
+
+    // Suggestion click event
+    suggestionsDiv.addEventListener("click", (e) => {
+      if (e.target.tagName === 'P') {
+        input.value = e.target.textContent;
+        suggestionsDiv.innerHTML = "";
+        suggestionsDiv.style.display = "none";
+        // Trigger input event to update suggestions
+        input.dispatchEvent(new Event('input'));
+      }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+        suggestionsDiv.style.display = "none";
+      }
+    });
+
+    // Check button event
+    checkBtn.addEventListener("click", () => {
+      const val = input.value.trim();
+      resultsDiv.innerHTML = "";
+
+      if (!val) {
+        resultsDiv.innerHTML = `
+          <div class="no-results">
+            <i class="fas fa-exclamation-circle"></i> Please enter a fruit name to check
+          </div>
+        `;
+        return;
+      }
+
+      // Show loading state
+      const originalText = checkBtn.innerHTML;
+      checkBtn.innerHTML = '<span class="spinner"></span> Checking...';
+      checkBtn.disabled = true;
+
+      // Simulate processing time for better UX
+      setTimeout(() => {
+        const matches = getBestMatches(val);
+        const labels = {
+          0: { text: "Exact Match", icon: "fas fa-check" },
+          1: { text: "Small Typo", icon: "fas fa-spell-check" },
+          2: { text: "Close Match", icon: "fas fa-exchange-alt" },
+          3: { text: "Similar Fruit", icon: "fas fa-search" }
+        };
+
+        let hasResults = false;
+
+        Object.keys(labels).forEach((dist) => {
+          if (matches[dist] && matches[dist].length > 0) {
+            hasResults = true;
+            const categoryDiv = document.createElement("div");
+            categoryDiv.className = "result-category";
+            categoryDiv.innerHTML = `
+              <h3><i class="${labels[dist].icon}"></i> ${labels[dist].text}</h3>
+              <div>
+                ${matches[dist].map(fruit => `<span class="fruit-badge">${fruit}</span>`).join('')}
+              </div>
+            `;
+            resultsDiv.appendChild(categoryDiv);
+          }
+        });
+
+        if (!hasResults) {
+          resultsDiv.innerHTML = `
+            <div class="no-results">
+              <i class="fas fa-question-circle"></i> No matching fruits found. Try a different spelling.
+            </div>
+          `;
+        }
+
+        // Restore button state
+        checkBtn.innerHTML = originalText;
+        checkBtn.disabled = false;
+      }, 500);
+    });
+
+    // Clear button event
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      suggestionsDiv.innerHTML = "";
+      suggestionsDiv.style.display = "none";
+      resultsDiv.innerHTML = "";
+      input.focus();
+    });
+
+    // Enter key support
+    input.addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        checkBtn.click();
+      }
+    });
+
+    // Handle page visibility change
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) {
+        // Page is visible again, refresh floating fruits
+        createFloatingFruits();
+      }
+    });
+
+    // Initialize with focus on input
+    input.focus();
